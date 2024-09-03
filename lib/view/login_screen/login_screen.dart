@@ -1,5 +1,3 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:bingebox/constants/cache_helper.dart';
 import 'package:bingebox/constants/color.dart';
 import 'package:bingebox/constants/cubit/cubit.dart';
 import 'package:bingebox/constants/cubit/states.dart';
@@ -15,7 +13,7 @@ class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    var cubit=bingeboxCubit.get(context);
+    var cubit = bingeboxCubit.get(context);
     return BlocConsumer<bingeboxCubit, bingeboxStates>(
       listener: (BuildContext context, bingeboxStates state) {
         // if (state is LoginErrorState) {
@@ -47,10 +45,13 @@ class LoginScreen extends StatelessWidget {
         return Scaffold(
           backgroundColor: backgroundColor,
           appBar: AppBar(
-            backgroundColor:backgroundColor,
+            backgroundColor: backgroundColor,
             foregroundColor: Colors.white,
-            title:const SizedBox(height: 50,
-                child: Image(image: AssetImage('assets/logo2.png'),)),
+            title: const SizedBox(
+                height: 50,
+                child: Image(
+                  image: AssetImage('assets/logo2.png'),
+                )),
           ),
           body: ModalProgressHUD(
             inAsyncCall: bingeboxCubit.get(context).showSpin,
@@ -60,16 +61,17 @@ class LoginScreen extends StatelessWidget {
                 width: double.infinity,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children:<Widget> [
+                  children: <Widget>[
                     const Text(
                       'LOGIN',
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 40,
-                          fontWeight: FontWeight.bold
-                      ),
+                          fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: height(context)*0.08,),
+                    SizedBox(
+                      height: height(context) * 0.08,
+                    ),
                     defaultFormField(
                         controller: cubit.email,
                         tybe: TextInputType.emailAddress,
@@ -80,15 +82,15 @@ class LoginScreen extends StatelessWidget {
                           return null;
                         },
                         text: 'Enter your email',
-                      width: width(context)*0.9,
-                      pref: Icons.email,
-                      radius: 10
-
+                        width: width(context) * 0.9,
+                        pref: Icons.email,
+                        radius: 10),
+                    SizedBox(
+                      height: height(context) * 0.03,
                     ),
-                    SizedBox(height: height(context)*0.03,),
                     defaultFormField(
-                        controller: cubit.password,
-                        tybe: TextInputType.emailAddress,
+                      controller: cubit.password,
+                      tybe: TextInputType.emailAddress,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'password must not be empty ';
@@ -96,13 +98,13 @@ class LoginScreen extends StatelessWidget {
                         return null;
                       },
                       text: 'Enter your password',
-                        width: width(context)*0.9,
-                        pref: Icons.lock,
-                        radius: 10,
-                      isPassword:true,
+                      width: width(context) * 0.9,
+                      pref: Icons.lock,
+                      radius: 10,
+                      isPassword: true,
                     ),
                     Padding(
-                      padding:  EdgeInsets.only(left: width(context)*0.06),
+                      padding: EdgeInsets.only(left: width(context) * 0.06),
                       child: Row(
                         children: [
                           const Text(
@@ -124,7 +126,7 @@ class LoginScreen extends StatelessWidget {
                               //     .sendPasswordResetEmail(
                               //     email: email.text);
                             },
-                            child:  Text(
+                            child: Text(
                               'Restart Now',
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -141,25 +143,27 @@ class LoginScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(height: height(context)*0.05,),
+                    SizedBox(
+                      height: height(context) * 0.05,
+                    ),
                     CustomButtonWidget(
-                      onTap: (){
+                      onTap: () {
                         Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => const HomeScreen()),
-                        (Route<dynamic> route) => false,
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomeScreen()),
+                          (Route<dynamic> route) => false,
                         );
                       },
                       color: buttonColor,
                       fontWeight: FontWeight.w500,
                       borderRadius: 10,
                       text: 'Login',
-                      heightButton: height(context)*0.06,
-                      widthButton: width(context)*0.9,
+                      heightButton: height(context) * 0.06,
+                      widthButton: width(context) * 0.9,
                     ),
                   ],
                 ),
-
               ),
             ),
           ),

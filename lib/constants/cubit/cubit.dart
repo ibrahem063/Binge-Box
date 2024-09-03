@@ -17,62 +17,37 @@ class bingeboxCubit extends Cubit<bingeboxStates> {
   var email = TextEditingController();
   var password = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  List<Map<String, dynamic>> trendinglist = [];
+  List<Map<dynamic, dynamic>> trendinglist = [];
   int dropDown = 1;
+
   List<DropdownMenuItem> itemDrop = [
-    const DropdownMenuItem(value: 1,
-      child: Text('Weekly',
-      style: TextStyle(
-          decoration: TextDecoration.none,
-          color: Colors.white,
-          fontSize: 16
+    const DropdownMenuItem(
+      value: 1,
+      child: Text(
+        'Weekly',
+        style: TextStyle(
+            decoration: TextDecoration.none, color: Colors.white, fontSize: 16),
       ),
     ),
-    ),
-    const DropdownMenuItem(value: 2,
-      child: Text('daily',
-      style: TextStyle(
-          decoration: TextDecoration.none,
-          color: Colors.white,
-          fontSize: 16
+    const DropdownMenuItem(
+      value: 2,
+      child: Text(
+        'daily',
+        style: TextStyle(
+            decoration: TextDecoration.none, color: Colors.white, fontSize: 16),
       ),
-    ),
     ),
   ];
 
   Future<void> trendinglisthome() async {
-    if(dropDown==1)
-      {
-        await http.get(
-          Uri.parse(
-              'https://api.themoviedb.org/3/trending/all/week?api_key=5ebe7170f95aab31d81fb727f86382a4'),
-        ).then((trendingweekresponse) {
-          if (trendingweekresponse.statusCode == 200) {
-            var tempdata = jsonDecode(trendingweekresponse.body);
-            var trendingweekjson = tempdata['results'];
-            trendinglist.clear(); // تفريغ القائمة قبل إضافة العناصر الجديدة
-            for (var item in trendingweekjson) {
-              trendinglist.add({
-                'id': item['id'],
-                'poster_path': item['poster_path'],
-                'vote_average': item['vote_average'],
-                'media_type': item['media_type'],
-                'indexno': 1
-              });
-            }
-            emit(RelodedMovieDoneState());
-          } else {
-            emit(RelodedMovieErrorState());
-          }
-        }).catchError((error) {
-          print("Error: $error");
-          emit(RelodedMovieErrorState());
-        });
-      }
-    else{
-      await http.get(
-        Uri.parse('https://api.themoviedb.org/3/trending/all/day?api_key=5ebe7170f95aab31d81fb727f86382a4'),
-      ).then((trendingweekresponse) {
+    emit(TrendingLoadingState());
+    if (dropDown == 1) {
+      await http
+          .get(
+        Uri.parse(
+            'https://api.themoviedb.org/3/trending/all/week?api_key=5ebe7170f95aab31d81fb727f86382a4'),
+      )
+          .then((trendingweekresponse) {
         if (trendingweekresponse.statusCode == 200) {
           var tempdata = jsonDecode(trendingweekresponse.body);
           var trendingweekjson = tempdata['results'];
@@ -86,17 +61,46 @@ class bingeboxCubit extends Cubit<bingeboxStates> {
               'indexno': 1
             });
           }
-          emit(RelodedMovieDoneState());
+          emit(TrendingDoneState());
         } else {
-          emit(RelodedMovieErrorState());
+          emit(TrendingErrorState());
         }
       }).catchError((error) {
         print("Error: $error");
-        emit(RelodedMovieErrorState());
+        emit(TrendingErrorState());
+      });
+    } else {
+      await http
+          .get(
+        Uri.parse(
+            'https://api.themoviedb.org/3/trending/all/day?api_key=5ebe7170f95aab31d81fb727f86382a4'),
+      )
+          .then((trendingweekresponse) {
+        if (trendingweekresponse.statusCode == 200) {
+          var tempdata = jsonDecode(trendingweekresponse.body);
+          var trendingweekjson = tempdata['results'];
+          trendinglist.clear(); // تفريغ القائمة قبل إضافة العناصر الجديدة
+          for (var item in trendingweekjson) {
+            trendinglist.add({
+              'id': item['id'],
+              'poster_path': item['poster_path'],
+              'vote_average': item['vote_average'],
+              'media_type': item['media_type'],
+              'indexno': 1
+            });
+          }
+          emit(TrendingDoneState());
+        } else {
+          emit(TrendingErrorState());
+        }
+      }).catchError((error) {
+        print("Error: $error");
+        emit(TrendingErrorState());
       });
     }
   }
-  List<Widget> tab=[
+
+  List<Widget> tab = [
     const Tab(
       child: Text(
         'Tv Series',
@@ -104,33 +108,41 @@ class bingeboxCubit extends Cubit<bingeboxStates> {
       ),
     ),
     const Tab(
-      child: Text('Movies',
-          style: TextStyle(color: Colors.white, fontSize: 18)),
+      child:
+          Text('Movies', style: TextStyle(color: Colors.white, fontSize: 18)),
     ),
     const Tab(
-      child: Text('Upcoming',
-          style: TextStyle(color: Colors.white, fontSize: 18)),
+      child:
+          Text('Upcoming', style: TextStyle(color: Colors.white, fontSize: 18)),
     ),
   ];
 
-  List<Widget> tabScreen=
-  [
+  List<Widget> tabScreen = [
     const TvSeriesScreen(),
     const MoviesScreen(),
     const UpcomingScreen(),
   ];
 
-  List<Map<String, dynamic>> serires = [];
+  List<Map<String, dynamic>> popularseries = [];
+  List<Map<String, dynamic>> toprated = [];
+  List<Map<String, dynamic>> ontheair = [];
+
   Future<void> Serieslisthome() async {
-    await http.get(
+    // إعلانات الواجهة
+    emit(SeriesLoadingState());
+
+    await http
+        .get(
       Uri.parse(
-          'https://api.themoviedb.org/3/tv/top_rated?api_key=5ebe7170f95aab31d81fb727f86382a4'),
-    ).then((SeriesResponse) {
-      if (SeriesResponse.statusCode == 200) {
-        var tempdata = jsonDecode(SeriesResponse.body);
-        var Seriesjson = tempdata['results'];
-        for (var item in Seriesjson) {
-          serires.add({
+          'https://api.themoviedb.org/3/tv/popular?api_key=5ebe7170f95aab31d81fb727f86382a4'),
+    )
+        .then((trendingweekresponse) {
+      if (trendingweekresponse.statusCode == 200) {
+        var tempdata = jsonDecode(trendingweekresponse.body);
+        var seriesjson = tempdata['results'];
+        popularseries.clear(); // تفريغ القائمة قبل إضافة العناصر الجديدة
+        for (var item in seriesjson) {
+          popularseries.add({
             'name': item['name'],
             'id': item['id'],
             'Date': item['first_air_date'],
@@ -138,14 +150,192 @@ class bingeboxCubit extends Cubit<bingeboxStates> {
             'vote_average': item['vote_average'],
           });
         }
-        emit(RelodedSeriesDoneState());
+        emit(SeriesDoneState());
       } else {
-        emit(RelodedSeriesErrorState());
+        emit(SeriesErrorState());
       }
     }).catchError((error) {
       print("Error: $error");
-      emit(RelodedSeriesErrorState());
+      emit(SeriesErrorState());
+    });
+
+    await http
+        .get(
+      Uri.parse(
+          'https://api.themoviedb.org/3/tv/top_rated?api_key=5ebe7170f95aab31d81fb727f86382a4'),
+    )
+        .then((trendingweekresponse) {
+      if (trendingweekresponse.statusCode == 200) {
+        var tempdata = jsonDecode(trendingweekresponse.body);
+        var seriesjson = tempdata['results'];
+        toprated.clear(); // تفريغ القائمة قبل إضافة العناصر الجديدة
+        for (var item in seriesjson) {
+          toprated.add({
+            'name': item['name'],
+            'id': item['id'],
+            'Date': item['first_air_date'],
+            'poster_path': item['poster_path'],
+            'vote_average': item['vote_average'],
+          });
+        }
+        emit(SeriesDoneState());
+      } else {
+        emit(SeriesErrorState());
+      }
+    }).catchError((error) {
+      print("Error: $error");
+      emit(SeriesErrorState());
+    });
+
+    await http
+        .get(
+      Uri.parse(
+          'https://api.themoviedb.org/3/tv/on_the_air?api_key=5ebe7170f95aab31d81fb727f86382a4'),
+    )
+        .then((trendingweekresponse) {
+      if (trendingweekresponse.statusCode == 200) {
+        var tempdata = jsonDecode(trendingweekresponse.body);
+        var seriesjson = tempdata['results'];
+        ontheair.clear(); // تفريغ القائمة قبل إضافة العناصر الجديدة
+        for (var item in seriesjson) {
+          ontheair.add({
+            'name': item['name'],
+            'id': item['id'],
+            'Date': item['first_air_date'],
+            'poster_path': item['poster_path'],
+            'vote_average': item['vote_average'],
+          });
+        }
+        emit(SeriesDoneState());
+      } else {
+        emit(SeriesErrorState());
+      }
+    }).catchError((error) {
+      print("Error: $error");
+      emit(SeriesErrorState());
+    });
+  }
+
+  List<Map<String, dynamic>> popularmovies = [];
+  List<Map<String, dynamic>> topratedmovies = [];
+  List<Map<String, dynamic>> nowmovies = [];
+  List<Map<String, dynamic>> upcomingmovie = [];
+
+
+  Future<void> movieslisthome() async {
+    // إعلانات الواجهة
+    emit(SeriesLoadingState());
+
+    await http
+        .get(
+      Uri.parse(
+          'https://api.themoviedb.org/3/movie/popular?api_key=5ebe7170f95aab31d81fb727f86382a4'),
+    )
+        .then((trendingweekresponse) {
+      if (trendingweekresponse.statusCode == 200) {
+        var tempdata = jsonDecode(trendingweekresponse.body);
+        var seriesjson = tempdata['results'];
+        popularmovies.clear(); // تفريغ القائمة قبل إضافة العناصر الجديدة
+        for (var item in seriesjson) {
+          popularmovies.add({
+            'name': item['name'],
+            'id': item['id'],
+            'Date': item['release_date'],
+            'poster_path': item['poster_path'],
+            'vote_average': item['vote_average'],
+          });
+        }
+        emit(MoviesDoneState());
+      } else {
+        emit(MoviesErrorState());
+      }
+    }).catchError((error) {
+      print("Error: $error");
+      emit(MoviesErrorState());
+    });
+
+    await http
+        .get(
+      Uri.parse(
+          'https://api.themoviedb.org/3/movie/top_rated?api_key=5ebe7170f95aab31d81fb727f86382a4'),
+    )
+        .then((trendingweekresponse) {
+      if (trendingweekresponse.statusCode == 200) {
+        var tempdata = jsonDecode(trendingweekresponse.body);
+        var seriesjson = tempdata['results'];
+        topratedmovies.clear(); // تفريغ القائمة قبل إضافة العناصر الجديدة
+        for (var item in seriesjson) {
+          topratedmovies.add({
+            'name': item['name'],
+            'id': item['id'],
+            'Date': item['release_date'],
+            'poster_path': item['poster_path'],
+            'vote_average': item['vote_average'],
+          });
+        }
+        emit(MoviesDoneState());
+      } else {
+        emit(MoviesErrorState());
+      }
+    }).catchError((error) {
+      print("Error: $error");
+      emit(MoviesErrorState());
+    });
+
+    await http
+        .get(
+      Uri.parse(
+          'https://api.themoviedb.org/3/movie/now_playing?api_key=5ebe7170f95aab31d81fb727f86382a4'),
+    )
+        .then((trendingweekresponse) {
+      if (trendingweekresponse.statusCode == 200) {
+        var tempdata = jsonDecode(trendingweekresponse.body);
+        var seriesjson = tempdata['results'];
+        nowmovies.clear(); // تفريغ القائمة قبل إضافة العناصر الجديدة
+        for (var item in seriesjson) {
+          nowmovies.add({
+            'name': item['name'],
+            'id': item['id'],
+            'Date': item['release_date'],
+            'poster_path': item['poster_path'],
+            'vote_average': item['vote_average'],
+          });
+        }
+        emit(MoviesDoneState());
+      } else {
+        emit(MoviesErrorState());
+      }
+    }).catchError((error) {
+      print("Error: $error");
+      emit(MoviesErrorState());
+    });
+
+    await http
+        .get(
+      Uri.parse(
+          'https://api.themoviedb.org/3/movie/upcoming?api_key=5ebe7170f95aab31d81fb727f86382a4'),
+    )
+        .then((trendingweekresponse) {
+      if (trendingweekresponse.statusCode == 200) {
+        var tempdata = jsonDecode(trendingweekresponse.body);
+        var seriesjson = tempdata['results'];
+        upcomingmovie.clear(); // تفريغ القائمة قبل إضافة العناصر الجديدة
+        for (var item in seriesjson) {
+          upcomingmovie.add({
+            'name': item['name'],
+            'id': item['id'],
+            'Date': item['release_date'],
+            'poster_path': item['poster_path'],
+            'vote_average': item['vote_average'],
+          });
+        }
+        emit(MoviesDoneState());
+      } else {
+        emit(MoviesErrorState());
+      }
+    }).catchError((error) {
+      print("Error: $error");
+      emit(MoviesErrorState());
     });
   }
 }
-
