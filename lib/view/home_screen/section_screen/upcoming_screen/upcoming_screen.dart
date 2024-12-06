@@ -1,14 +1,37 @@
-import 'package:bingebox/constants/color.dart';
+import 'package:bingebox/constants/cubit/cubit.dart';
+import 'package:bingebox/constants/cubit/states.dart';
+import 'package:bingebox/constants/slider_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UpcomingScreen extends StatelessWidget {
   const UpcomingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      body: Center(child: Text('Upcoming', style: TextStyle(color: Colors.white),)),
+    var cubit = bingeboxCubit.get(context);
+    return BlocConsumer<bingeboxCubit, bingeboxStates>(
+      listener: (BuildContext context, bingeboxStates state) {
+        if (state is SeriesErrorState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Error')),
+          );
+        }
+      },
+      builder: (BuildContext context, bingeboxStates state) {
+        if(state is SeriesLoadingState)
+        {
+          return const Center(child: CircularProgressIndicator(color: Colors.red,));
+        }
+        else{
+          return Column(
+            children: [
+              sliderList(cubit.upcomingmovie, 'Upcoming movies','movie', cubit.upcomingmovie.length),
+            ],
+          );
+        }
+      },
     );
   }
 }
+

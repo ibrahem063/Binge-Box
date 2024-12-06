@@ -1,6 +1,7 @@
 import 'package:bingebox/constants/color.dart';
 import 'package:bingebox/constants/cubit/cubit.dart';
 import 'package:bingebox/constants/cubit/states.dart';
+import 'package:bingebox/constants/search_bar_widget.dart';
 import 'package:bingebox/constants/width_and_height.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -111,6 +112,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                ),
                SliverList(
                  delegate: SliverChildListDelegate([
+                   SearchBarFun(),
                    Container(
                      width: width(context),
                      height: height(context) * 0.07,

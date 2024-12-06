@@ -1,4 +1,4 @@
-String ApiKey='5ebe7170f95aab31d81fb727f86382a4';
+String apikey='5ebe7170f95aab31d81fb727f86382a4';
 // curl --request GET \
 // --url 'https://api.themoviedb.org/3/tv/top_rated?api_key=5ebe7170f95aab31d81fb727f86382a4' \
 // --header 'Authorization: Bearer 5ebe7170f95aab31d81fb727f86382a4' \

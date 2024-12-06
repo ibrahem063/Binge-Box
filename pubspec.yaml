@@ -26,6 +26,10 @@ dependencies:
   get_it: ^7.7.0
   carousel_slider: ^5.0.0
   http: ^1.2.2
+  font_awesome_flutter: ^10.7.0
+  youtube_player_flutter: ^9.0.3
+  flutter_inappwebview: ^6.0.0
+  fluttertoast: ^8.2.8
 
 
 dev_dependencies:

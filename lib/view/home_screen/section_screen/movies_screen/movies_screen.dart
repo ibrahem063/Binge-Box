@@ -26,9 +26,9 @@ class MoviesScreen extends StatelessWidget {
         else{
           return Column(
             children: [
-              sliderList(cubit.popularmovies, 'popular movies', cubit.popularmovies.length),
-              sliderList(cubit.nowmovies, 'now playing', cubit.nowmovies.length),
-              sliderList(cubit.topratedmovies, 'top rated movies', cubit.topratedmovies.length),
+              sliderList(cubit.popularmovies, 'popular movies', 'movie',cubit.popularmovies.length),
+              sliderList(cubit.nowmovies, 'now playing', 'movie',cubit.nowmovies.length),
+              sliderList(cubit.topratedmovies, 'top rated movies', 'movie',cubit.topratedmovies.length),
             ],
           );
         }

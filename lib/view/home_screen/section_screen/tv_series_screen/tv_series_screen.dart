@@ -26,9 +26,9 @@ class TvSeriesScreen extends StatelessWidget {
         else{
           return Column(
             children: [
-              sliderList(cubit.popularseries, 'popular tv series', cubit.popularseries.length),
-              sliderList(cubit.ontheair, 'on the air', cubit.ontheair.length),
-              sliderList(cubit.toprated, 'top rated series', cubit.toprated.length),
+              sliderList(cubit.popularseries, 'popular tv series','Tv', cubit.popularseries.length),
+              sliderList(cubit.ontheair, 'on the air','Tv', cubit.ontheair.length),
+              sliderList(cubit.toprated, 'top rated series','Tv', cubit.toprated.length),
             ],
           );
         }
